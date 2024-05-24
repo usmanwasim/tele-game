@@ -1,0 +1,14 @@
+{
+	"name": "template",
+	"version": "1.0.0",
+	"license": "MIT",
+	"scripts": {
+		"prepare": "husky install",
+		"client": "cd client && yarn dev",
+		"server": "cd server && yarn dev"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"husky": "^8.0.0"
+	}
+}
