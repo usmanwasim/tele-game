@@ -12,14 +12,17 @@
         "axios": "^1.4.0",
         "bcrypt": "^5.1.0",
         "cookie-parser": "~1.4.4",
+        "crypto": "^1.0.1",
         "debug": "~2.6.9",
         "dotenv": "^16.3.1",
+        "eventemitter3": "^5.0.1",
         "express": "~4.16.1",
         "joi": "^17.9.2",
         "jsonwebtoken": "^9.0.0",
         "lodash": "^4.17.21",
         "mongoose": "^7.3.1",
         "morgan": "~1.9.1",
+        "node-telegram-bot-api": "^0.66.0",
         "redis": "^4.6.7"
     },
     "devDependencies": {
