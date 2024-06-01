@@ -26,13 +26,14 @@ app.get('/ping', function (_req, res) {
     res.send('pong');
 });
 
-const joinLink = `https://t.me/comunebologna`;
+const joinLink = `https://t.me/Usman_Wasim`;
 const imageUrl = 'https://telegram-game-liart.vercel.app/bitcoin1.png';
 
-bot.onText(/^\/start$/, async (msg) => {
+bot.onText(/^\/start (.+)$/, async (msg, match) => {
     const chatId = msg.chat.id;
     const firstName = msg.chat.first_name;
     const lastName = msg.chat.last_name;
+
     try {
         const { default: fetch } = await import('node-fetch');
         const response = await fetch(imageUrl);
@@ -46,7 +47,9 @@ bot.onText(/^\/start$/, async (msg) => {
         let Count = await User.count();
         if (!user) {
             return bot.sendPhoto(chatId, resizedImageBuffer, {
-                caption: `Welcome to TeleGame ${firstName} ${lastName}.\n\nTotal Users : ${Count}`,
+                caption: `Welcome to TeleGame ${firstName} ${lastName}.\n\nTotal Users : ${Count} \n\n ${
+                    match && `referral link : ${match}`
+                } `,
                 reply_markup: {
                     inline_keyboard: [
                         [
