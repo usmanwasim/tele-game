@@ -3,16 +3,34 @@ const crypto = require('crypto');
 
 var userSchema = mongoose.Schema(
     {
-        firstName: String,
-        lastName: String,
-        chatId: String,
-        referral: String,
-        referrer: String,
+        username: { type: String },
+        chatId: { type: String },
+        referral: { type: String, default: '' },
+        referralCode: { type: String, unique: true },
     },
     {
         timeStamps: true,
     },
 );
+
+// Utility function to generate an 8-digit random string
+function generateRandomString() {
+    return crypto.randomBytes(4).toString('hex').substring(0, 8);
+}
+// generate referral code
+userSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        let unique = false;
+        while (!unique) {
+            this.referralCode = generateRandomString();
+            const existingString = await User.findOne({ referralCode: this.referralCode });
+            if (!existingString) {
+                unique = true;
+            }
+        }
+    }
+    next();
+});
 
 function encryption(text) {
     let cipher = crypto.createCipheriv(
@@ -45,5 +63,7 @@ userSchema.methods.encrypt = async function () {
     this.privateKey = encryptData1;
 };
 
-module.exports.User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports.User = User;
+module.exports.encryption = encryption;
 module.exports.decryption = decryption;
