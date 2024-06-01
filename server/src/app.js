@@ -33,6 +33,8 @@ bot.onText(/^\/start (.+)$/, async (msg, match) => {
     const chatId = msg.chat.id;
     const firstName = msg.chat.first_name;
     const lastName = msg.chat.last_name;
+    const referral = match[1] && match[1];
+    console.log(referral);
 
     try {
         const { default: fetch } = await import('node-fetch');
@@ -44,32 +46,46 @@ bot.onText(/^\/start (.+)$/, async (msg, match) => {
         let user = await User.findOne({
             chatId,
         });
-        let Count = await User.count();
-        if (!user) {
-            return bot.sendPhoto(chatId, resizedImageBuffer, {
-                caption: `Welcome to TeleGame ${firstName} ${lastName}.\n\nTotal Users : ${Count} \n\n ${
-                    match && `referral link : ${match}`
-                } `,
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: '👋 Play Game',
-                                web_app: { url: 'https://telegram-game-liart.vercel.app' },
-                            },
-                        ],
-                        [
-                            {
-                                text: '🧑‍💻 Join Buddy',
-                                url: joinLink,
-                            },
-                        ],
-                    ],
-                },
+        if (referral) {
+            user.create({
+                firstName,
+                lastName,
+                chatId,
+                referral,
+            });
+        } else {
+            user.create({
+                firstName,
+                lastName,
+                chatId,
             });
         }
+
+        let Count = await User.count();
+
+        return bot.sendPhoto(chatId, resizedImageBuffer, {
+            caption: `Welcome to TeleGame ${firstName} ${lastName}.\n\nTotal Users : ${Count} \n\n ${
+                match && `referral link : ${match}`
+            } `,
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: '👋 Play Game',
+                            web_app: { url: 'https://telegram-game-liart.vercel.app' },
+                        },
+                    ],
+                    [
+                        {
+                            text: '🧑‍💻 Join Buddy',
+                            url: joinLink,
+                        },
+                    ],
+                ],
+            },
+        });
     } catch (error) {
-        bot.sendMessage(chatId, error);
+        bot.sendMessage(chatId, ' Internal Server Error');
         console.log(error, 'app error -= - - = -=- ');
     }
 });

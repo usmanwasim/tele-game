@@ -6,6 +6,8 @@ var userSchema = mongoose.Schema(
         firstName: String,
         lastName: String,
         chatId: String,
+        referral: String,
+        referrer: String,
     },
     {
         timeStamps: true,
